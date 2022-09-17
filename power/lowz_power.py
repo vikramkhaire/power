@@ -69,23 +69,41 @@ def average(bins,power,k):
         k_out.append(k_use)
         power_out.append(power_use)
     return np.array(k_out), np.array(power_out), np.array(N_use_out)
-    
-###########################
 
-def compute_power(use_metalmasking=False,wavelim=[1050,1180],zbin=[0.005,0.171875],no_lsf_correction=False,
+
+def compute_power(masterfile = '', data_path = '',  use_metalmasking=False,wavelim=[1050,1180],zbin=[0.005,0.171875],no_lsf_correction=False,
                   fill_with_noise=False, only_130M=False, only_160M=False, use_milkyway_metals=False, use_igm_metals=False):
-    
+
+    ##### Reading in COS QSO and z ####
+    obj_name, redshift, sn, flag, res, lpin = zip(
+        *np.genfromtxt(masterfile, comments='#', dtype=['<U30', np.float, np.float, np.int, np.float, 'U3']))
+
+    obj_name, redshift, sn, flag, res, lpin = np.array(obj_name), np.array(redshift), np.array(sn), np.array(
+        flag), np.array(res), np.array(lpin)
+
+    ###### Pick Out COS Sample (i.e. flags) and Put in RES #########
+
+    obj_name = obj_name
+    redshift = redshift
+    Resolution = res / 2.35  # res is given in fwhm and resolution is simga; sigma =  FWHM/2.355
+
+    # obj_name = data2[:,0]
+    filtered = (sn >= 10) & (flag==1)
+    redshift = redshift[filtered]
+    obj_name = obj_name[filtered]
+    sn = sn[filtered]
+    flag = flag[filtered]
+    Resolution = Resolution[filtered]
+    LP = [l[-1] for l in lpin[filtered]]
+
     # for central_z in redshift_bins:
     Lomb_k = []
     Lomb_power = []
     z_abs_all = []
-    path = '/home/vikram/Dropbox/power_spectrum_idl_cleaned_up/'
     # Looping through QSO spectra #
     for obj, zqso, res, lp in zip(obj_name, redshift, Resolution, LP):
-        data = np.loadtxt(path + 'danforth_data_MW_format_new/modified_MW_format/{}.dat'.format(obj.astype(str)),
+        data = np.loadtxt(data_path + '/{}.dat'.format(obj.astype(str)),
                           comments='resvel')
-        # print (obj, zqso)
-
 
         ## Reading Data ##
         wavelength = data[:, 0]
@@ -205,33 +223,11 @@ def compute_power(use_metalmasking=False,wavelim=[1050,1180],zbin=[0.005,0.17187
             [np.mean(np.concatenate(z_abs_all))] * len(LS_k_mean)]
 
 
-
-
-path = '/home/vikram/Dropbox/power_spectrum_idl_cleaned_up/'
-##### Reading in COS QSO and z ####
-obj_name, redshift, sn, flag, res, lpin = zip(
-    *np.genfromtxt(path + 'danforth_data_MW_format_new/masterfile.txt', comments='#',
-                   dtype=['<U30', np.float, np.float, np.int, np.float, 'U3']))
-
-obj_name, redshift, sn, flag, res, lpin = np.array(obj_name), np.array(redshift), np.array(sn), np.array(
-    flag), np.array(res), np.array(lpin)
-
-###### Pick Out COS Sample (i.e. flags) and Put in RES #########
-
-obj_name = obj_name
-redshift = redshift
-Resolution = res / 2.35  # Why the division?
-
-# obj_name = data2[:,0]
-filtered = (sn >= 10) & (flag==1)
-redshift = redshift[filtered]
-obj_name = obj_name[filtered]
-sn = sn[filtered]
-flag = flag[filtered]
-Resolution = Resolution[filtered]
-LP = [l[-1] for l in lpin[filtered]]
 # LP=[l.decode()[-1] for l in lpin]
 
+
+masterfile = '/home/vikram/Dropbox/power_spectrum_idl_cleaned_up/danforth_data_MW_format_new/masterfile.txt'
+data_path =  '/home/vikram/Dropbox/power_spectrum_idl_cleaned_up/danforth_data_MW_format_new/modified_MW_format'
 
 zbinarr=[[0.005, 0.06], [0.06, 0.16], [0.16, 0.26], [0.26, 0.36], [0.36, 0.48]]
 #zbinarr=[[0.16, 0.26]]
@@ -246,10 +242,12 @@ waverangearr=[[1050, 1180]]
 for zbin in zbinarr:
   for waverange in waverangearr:
       outpath = '/home/vikram/output_power/'
-      Power_table = tbl.Table(compute_power(use_metalmasking=True,zbin=zbin,wavelim=waverange),names=['LS K-modes','LS Power(noise and wind corr)','N_used', 'C','z'])
+      Power_table = tbl.Table(compute_power(masterfile=masterfile, data_path=data_path, use_metalmasking=True,zbin=zbin,wavelim=waverange),
+                              names=['LS K-modes','LS Power(noise and wind corr)','N_used', 'C','z'])
       Power_table.add_column(tbl.Column(np.sqrt(np.diag(Power_table['C'])),name='sigma'))
       out=Power_table['z','LS K-modes','LS Power(noise and wind corr)','sigma','N_used']
-      out.write(outpath+'z0Power_metals_masked_z{:.2f}-{:.2f}_wave{}-{}.txt'.format(zbin[0],zbin[1],waverange[0],waverange[1]),format="ascii.commented_header", overwrite=True)
+      out.write(outpath+'z0Power_metals_masked_z{:.2f}-{:.2f}_wave{}-{}.txt'.format(zbin[0],zbin[1],waverange[0],waverange[1]),
+                format="ascii.commented_header", overwrite=True)
     
 
   #  Power_table_masked = tbl.Table(compute_power(use_metalmasking=True,only_160M=True, zbin=zbin,wavelim=waverange),names=['LS K-modes','masked LS Power (noise and wind corr)','N_used','C','z'])
