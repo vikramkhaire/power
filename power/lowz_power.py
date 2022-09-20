@@ -70,7 +70,7 @@ def average(bins,power,k):
 
 
 def compute_power(masterfile = '', data_path = '',  use_metalmasking=False,wavelim=[1050,1180],zbin=[0.005,0.171875],no_lsf_correction=False,
-                  fill_with_noise=False, only_130M=False, only_160M=False, use_milkyway_metals=False, use_igm_metals=False):
+                  fill_with_noise=False, only_130M=False, only_160M=False, use_milkyway_metals=False, use_igm_metals=False, forward_models = False):
 
     ##### Reading in COS QSO and z ####
     obj_name, redshift, sn, flag, res, lpin = zip(
@@ -83,7 +83,7 @@ def compute_power(masterfile = '', data_path = '',  use_metalmasking=False,wavel
 
     obj_name = obj_name
     redshift = redshift
-    Resolution = res / 2.35  # res is given in fwhm and resolution is simga; sigma =  FWHM/2.355
+    Resolution = res / 2.355  # res is given in fwhm and resolution is simga; sigma =  FWHM/2.355
 
     # obj_name = data2[:,0]
     filtered = (sn >= 10) & (flag==1)
