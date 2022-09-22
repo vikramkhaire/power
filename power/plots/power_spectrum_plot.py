@@ -11,9 +11,13 @@ from scipy.signal import savgol_filter
 path = '/home/vikram/output_power/test'
 LS_power_file = path + '/' + 'power_forward_tng_Gamma_0.09000_Nran_010000_seed_42.txt'
 normal_power_file  =  path + '/' + 'new_power_igm_IllustrisTNG_z01_rudi_G0.09.fits'
+tau_added  =  path + '/' + 'new_power_igm_IllustrisTNG_z01_rudi_G0.09_tau_added.fits'
+
 
 d = tab.Table. read(LS_power_file, format = 'ascii')
 p = tab.Table.read(normal_power_file)
+adhoc = tab.Table.read(tau_added)
+
 
 
 # Read the power-spectrum file
@@ -37,6 +41,8 @@ label = 'Lomb-scargle'
 ax1.plot(d['LS K-modes'], d['LS Power(noise and wind corr)'],  label = label, color = 'b', linewidth=2.5)
 label = 'normal'
 ax1.plot(p['k_v'], p['pkp_v'], label = label, color = 'r', linestyle = '--', linewidth=2.5, dashes=(4,3))
+label = 'tau 0.01 added'
+ax1.plot(adhoc['k_v'], adhoc['pkp_v'], label = label, color = 'g', linestyle = '--', linewidth=2.5, dashes=(4,3))
 
 
 
