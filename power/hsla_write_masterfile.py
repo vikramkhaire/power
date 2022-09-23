@@ -3,16 +3,16 @@ import numpy as np
 import glob
 
 
-data_path = ''
+data_path = '/home/vikram/output_power/hsla'
 
-d  =  tab.Table.read(data_path + 'quasar_probing_low_z_lyaf.txt', format ='ascii')
+d  =  tab.Table.read(data_path + '/' + 'quasar_probing_low_z_lyaf.txt', format ='ascii')
 qname = d['qname_lyaf']
 
 files =  glob.glob(data_path + '/*.fits')
 
 qname_stored = []
 for i in files:
-    name  = i.split('_coadd')[0]
+    name  = i.split('/')[-1].split('_coadd')[0]
     qname_stored.append(name)
 
 
@@ -29,7 +29,7 @@ for j in qname_stored:
     try:
         ind = qname.index(j)
         obj.append(j)
-        redshift.append(d['zem_q_lyaf'])
+        redshift.append(d['zem_q_lyaf'][ind])
         # --- keeping the const numbers
         sn.append(10)
         flag.append(0)
@@ -39,3 +39,8 @@ for j in qname_stored:
         print(j, 'not present in the file quasar_probing_low_z_lyaf.txt')
 
 # store masterfile
+master_table = tab.Table([obj, redshift, sn, flag, res, lpin], names = ('obj', 'z', 'sn', 'flag', 'res', 'lp'))
+print(master_table)
+
+masterfile_name = data_path + '/masterfile.fits'
+master_table.write(masterfile_name, overwrite = True)
