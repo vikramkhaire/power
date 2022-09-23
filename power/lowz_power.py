@@ -221,28 +221,28 @@ def compute_power(masterfile = '', data_path = '',  use_metalmasking=False,wavel
             [np.mean(np.concatenate(z_abs_all))] * len(LS_k_mean)]
 
 
-def compute_power_hsla(masterfile = '', data_path = '',  use_metalmasking=False,wavelim=[1050,1180],zbin=[0.005,0.171875],no_lsf_correction=False,
+def compute_power_hsla(data_path = '', use_metalmasking=False,wavelim=[1050,1180],zbin=[0.005,0.171875],no_lsf_correction=False,
                   fill_with_noise=False, only_130M=False, only_160M=False, use_milkyway_metals=False, use_igm_metals=False):
 
-    ##### Reading in COS QSO and z ####
-    obj_name, redshift, sn, flag, res, lpin = zip(
-        *np.genfromtxt(masterfile, comments='#', dtype=['<U30', np.float, np.float, np.int, np.float, 'U3']))
+    masterfile = data_path + '/' + 'masterfile.fits'
+    info = tab.Table.read(masterfile)
 
-    obj_name, redshift, sn, flag, res, lpin = np.array(obj_name), np.array(redshift), np.array(sn), np.array(
-        flag), np.array(res), np.array(lpin)
+    obj_name = info['obj']
+    redshift = info['z']
+    sn = info['sn']
+    flag = info['flag']
+    res = info['res']
+    lpin = info['lp']
+
 
     ###### Pick Out COS Sample (i.e. flags) and Put in RES #########
-
-    obj_name = obj_name
-    redshift = redshift
     Resolution = res / 2.355  # res is given in fwhm and resolution is simga; sigma =  FWHM/2.355
+    #-- we don't even use the above line
 
     # obj_name = data2[:,0]
     filtered = (sn >= 10) & (flag==1)
     redshift = redshift[filtered]
     obj_name = obj_name[filtered]
-    sn = sn[filtered]
-    flag = flag[filtered]
     Resolution = Resolution[filtered]
     LP = [l[-1] for l in lpin[filtered]]
 
@@ -252,15 +252,15 @@ def compute_power_hsla(masterfile = '', data_path = '',  use_metalmasking=False,
     z_abs_all = []
     # Looping through QSO spectra #
     for obj, zqso, res, lp in zip(obj_name, redshift, Resolution, LP):
-        data = np.loadtxt(data_path + '/{}.dat'.format(obj.astype(str)),
-                          comments='resvel')
+        data_file_name =  data_path + '/{}_coadd_G130M_final_lpALL_continuum.fits'.format(obj)
+        data = tab.Table.read(data_file_name)
 
         ## Reading Data ##
-        wavelength = data[:, 0]
-        flux = data[:, 1]
-        sigma_F = data[:, 2]
-        continuum = data[:, 3]
-        mask = data[:, 4]
+        wavelength = data['WAVE']
+        flux = data['FLUX']
+        sigma_F = data['ERROR']
+        continuum = data['Conti_spline']
+        mask = data['GAP_FLAGS']
 
         # cutting data into rest frame range 1050 Ang to 1180Ang #
         cut2 = np.logical_and(wavelength > wavelim[0] * (1 + zqso), wavelength <= wavelim[1] * (1 + zqso))
