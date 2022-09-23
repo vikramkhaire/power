@@ -20,7 +20,7 @@ for i in files:
 obj = []
 redshift = []
 sn = []  # did not store; cut was applied to be > 5
-flag = [] # everthing is zero
+flag = [] # everthing is 1
 res = []  # fix 15 km/s
 lpin = [] # fixing it to lifetime position 1
 
@@ -32,7 +32,7 @@ for j in qname_stored:
         redshift.append(d['zem_q_lyaf'][ind])
         # --- keeping the const numbers
         sn.append(10)
-        flag.append(0)
+        flag.append(1)
         res.append(15)
         lpin.append('LP1')
     except:
