@@ -221,7 +221,7 @@ def compute_power(masterfile = '', data_path = '',  use_metalmasking=False,wavel
             [np.mean(np.concatenate(z_abs_all))] * len(LS_k_mean)]
 
 
-def compute_power_hsla(data_path = '', use_metalmasking=False,wavelim=[1050,1180],zbin=[0.005,0.171875],no_lsf_correction=False,
+def compute_power_hsla(data_path = '', use_metalmasking=False,wavelim=[1050,1180],zbin=[0.06, 0.16],no_lsf_correction=False,
                   fill_with_noise=False, only_130M=False, only_160M=False, use_milkyway_metals=False, use_igm_metals=False):
 
     masterfile = data_path + '/' + 'masterfile.fits'
