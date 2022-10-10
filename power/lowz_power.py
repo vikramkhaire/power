@@ -251,6 +251,7 @@ def compute_power_hsla(data_path = '', use_metalmasking=False,wavelim=[1050,1180
     Lomb_power = []
     z_abs_all = []
     # Looping through QSO spectra #
+    count_objects = 0
     for obj, zqso, res, lp in zip(obj_name, redshift, Resolution, LP):
         data_file_name =  data_path + '/{}_coadd_G130M_final_lpALL_continuum.fits'.format(obj)
         data = tab.Table.read(data_file_name)
@@ -260,7 +261,8 @@ def compute_power_hsla(data_path = '', use_metalmasking=False,wavelim=[1050,1180
         flux = data['FLUX']
         sigma_F = data['ERROR']
         continuum = data['Conti_spline']
-        mask = data['GAP_FLAGS']
+        #mask = data['GAP_FLAGS']
+        mask = data['mask']
 
         # cutting data into rest frame range 1050 Ang to 1180Ang #
         cut2 = np.logical_and(wavelength > wavelim[0] * (1 + zqso), wavelength <= wavelim[1] * (1 + zqso))
@@ -348,12 +350,14 @@ def compute_power_hsla(data_path = '', use_metalmasking=False,wavelim=[1050,1180
             ith_power = Raw_diff_Noise
         Lomb_power.append(ith_power)
         z_abs_all.append(z_absorber)
+        count_objects = count_objects + 1
     try:
         LS_k = np.concatenate(np.array(Lomb_k))
     except ValueError:
         return [[], [], [], [], []]
     LS_power = np.concatenate(Lomb_power)
 
+    print('total spectra in the bin', zbin, 'are :', count_objects)
     bins = np.logspace(np.log10(0.00012596187096205269 / np.sqrt(10)), np.log10(1.25962), 46)
     # FFT_masked_k_mean, FFT_masked_power_mean = average(bins/(2.0*np.pi), power, k)
 
