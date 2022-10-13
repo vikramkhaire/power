@@ -22,13 +22,13 @@ def readfile(filename):
    return x, y, err, z
 
 # plotting
-fig_name = 'power_hsla_z003_fill_noise.pdf'
+fig_name = 'power_hsla_z01_fill_noise.pdf'
 font = {'family': 'serif', 'weight': 'normal', 'size': 11}
 plt.rc('font', **font)
 fig, (ax1, ax2) = plt.subplots(2,1, sharex=True, gridspec_kw = {'height_ratios':[3, 1]},figsize=(6, 7) )
 
 # Read the power-spectrum file
-binz = [0.01, 0.06]
+binz = [0.06, 0.16]
 filename='/home/vikram/power_data/z0Power_metals_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
 # same folder is there in igm server
 x, y, err, z=readfile(filename)
@@ -60,7 +60,7 @@ ax2.hlines(y=5, xmin=1e-10, xmax=1e10, linestyles=':', color='b')
 ax2.hlines(y=-5, xmin=1e-10, xmax=1e10, linestyles=':', color='b')
 
 ax1.set_yscale('log', nonposy='clip')
-ax1.set_ylim(7e-5, 0.011)
+ax1.set_ylim(7e-5, 0.8)
 ax1.legend(loc='best', fontsize = 11)
 ax1.set_ylabel(r'k P(k) ${\rm \, /\, \pi}$')
 ax2.set_xlabel(r'k [s/km]')
