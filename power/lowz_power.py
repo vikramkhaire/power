@@ -152,6 +152,11 @@ def compute_power(masterfile = '', data_path = '',  use_metalmasking=False,wavel
         F_bar = np.mean(flux / continuum)
         velocity_data = c * np.log(wavelength / Ly_alpha / (1 + zqso))
 
+        # remove bad spectra with F_bar (either continuum fits are bad or some emission line not removed)
+        if F_bar >1.5:
+            print('F_bar is too big :', F_bar)
+            continue
+
         tauevo = -np.log(F_bar)  # -np.log(0.963)#tau0 * ((1+z_absorber)/(1+z0))**beta + C  #adjusted optical depth
         dF_list = flux / (np.exp(-tauevo)) / continuum - 1
         normalized_sigma = sigma_F / (np.exp(-tauevo)) / continuum
@@ -284,7 +289,7 @@ def compute_power_hsla(data_path = '', use_metalmasking=False,wavelim=[1050,1180
             sigma_F = sigma_F[cutall]
             continuum = continuum[cutall]
             mask = mask[cutall]
-            remove = (mask==5) | (mask==6)
+            remove = (mask==5) | (mask==6) | (mask==7)
             flux[remove] = continuum[remove] + np.random.randn(np.sum(remove)) * sigma_F[remove]
         else:
             wavelength = wavelength[cut]
