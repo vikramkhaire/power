@@ -35,7 +35,7 @@ for j in qname_stored:
         # sor flags in hsla data by Sapna
         # flag 1 for SNR < 3 and flag 2 for 3<SNR <5
         data = tab.Table.read(data_path + '/{}_coadd_G130M_final_lpALL_continuum.fits'.format(j))
-        if len(data)/len(data[data['GAP_FLAGS']==0.0]) > 2:
+        if len(data)/(len(data[data['GAP_FLAGS']==0.0]) +len(data[data['GAP_FLAGS']==2])) > 2:
             flag.append(0)
         else:
             flag.append(1)
@@ -48,5 +48,5 @@ for j in qname_stored:
 master_table = tab.Table([obj, redshift, sn, flag, res, lpin], names = ('obj', 'z', 'sn', 'flag', 'res', 'lp'))
 print(master_table)
 
-masterfile_name = data_path + '/masterfile.fits'
+masterfile_name = data_path + '/masterfile_all.fits'
 master_table.write(masterfile_name, overwrite = True)

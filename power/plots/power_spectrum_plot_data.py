@@ -22,7 +22,7 @@ def readfile(filename):
    return x, y, err, z
 
 # plotting
-fig_name = 'power_hsla_z01_fill_noise.pdf'
+fig_name = 'power_hsla_z01.pdf'
 font = {'family': 'serif', 'weight': 'normal', 'size': 11}
 plt.rc('font', **font)
 fig, (ax1, ax2) = plt.subplots(2,1, sharex=True, gridspec_kw = {'height_ratios':[3, 1]},figsize=(6, 7) )
@@ -36,7 +36,7 @@ label=r'$\bar {\rm z}$'+'={:.2f} (Khaire et al. 2019)'.format(z)
 
 ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='green', capsize=5, elinewidth=2, zorder = 10, alpha =0.75)
 
-filename='/home/vikram/output_power/hsla_power/Power_metals_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
+filename='/home/vikram/output_power/hsla_power/high_SN/Power_metals_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
 # same folder is there in igm server
 x, y, err, z=readfile(filename)
 label=r'$\bar {\rm z}$'+'={:.2f} HSLA'.format(z)
@@ -46,9 +46,9 @@ ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='re
 
 filename='/home/vikram/output_power/hsla_power/Power_metals_masked_z{:.2f}-{:.2f}_wave1050-1180_filled_noise.txt'.format(binz[0], binz[1])
 # same folder is there in igm server
-x, y, err, z=readfile(filename)
-label=r'$\bar {\rm z}$'+'={:.2f} HSLA gaps filled'.format(z)
-ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='orange', capsize=5, elinewidth=2, zorder = 10, alpha=0.4)
+#x, y, err, z=readfile(filename)
+#label=r'$\bar {\rm z}$'+'={:.2f} HSLA gaps filled'.format(z)
+#ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='orange', capsize=5, elinewidth=2, zorder = 10, alpha=0.4)
 
 ax2.set_ylim (-12, 12)
 ax2.set_ylabel ('% difference')
@@ -60,7 +60,7 @@ ax2.hlines(y=5, xmin=1e-10, xmax=1e10, linestyles=':', color='b')
 ax2.hlines(y=-5, xmin=1e-10, xmax=1e10, linestyles=':', color='b')
 
 ax1.set_yscale('log', nonposy='clip')
-ax1.set_ylim(7e-5, 0.8)
+ax1.set_ylim(7e-5, 0.015)
 ax1.legend(loc='best', fontsize = 11)
 ax1.set_ylabel(r'k P(k) ${\rm \, /\, \pi}$')
 ax2.set_xlabel(r'k [s/km]')
