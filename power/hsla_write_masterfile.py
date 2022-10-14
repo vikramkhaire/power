@@ -35,10 +35,13 @@ for j in qname_stored:
         # sor flags in hsla data by Sapna
         # flag 1 for SNR < 3 and flag 2 for 3<SNR <5
         data = tab.Table.read(data_path + '/{}_coadd_G130M_final_lpALL_continuum.fits'.format(j))
-        if len(data)/(len(data[data['GAP_FLAGS']==0.0])) > 2:
+        quality = len(data) / (len(data[data['GAP_FLAGS']==0.0]))
+        if quality > 2:
             flag.append(0)
+            print(quality, '->0')
         else:
             flag.append(1)
+            print(quality, '->1')
         res.append(15)
         lpin.append('LP1')
     except:
