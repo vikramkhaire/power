@@ -12,7 +12,7 @@ waverangearr = [[1050, 1180]]
 for zbin in zbinarr:
     print('working in z=', zbin)
     for waverange in waverangearr:
-        outpath = '/home/vikram/output_power/hsla_power/'
+        outpath = '/home/vikram/output_power/hsla_power/medium_3.1_quality/'
         Power_table = tbl.Table(
             compute_power_hsla(data_path=data_path, use_metalmasking=True, zbin=zbin, wavelim=waverange, fill_with_noise = False),
             names=['LS K-modes', 'LS Power(noise and wind corr)', 'N_used', 'C', 'z'])
