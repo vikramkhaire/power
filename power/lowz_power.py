@@ -376,10 +376,13 @@ def compute_power_hsla(data_path = '', use_metalmasking=False,wavelim=[1050,1180
     bins = np.logspace(np.log10(0.00012596187096205269 / np.sqrt(10)), np.log10(1.25962), 46)
     # FFT_masked_k_mean, FFT_masked_power_mean = average(bins/(2.0*np.pi), power, k)
 
-    LS_k_mean, LS_power_mean, N_used = average(bins, LS_power, LS_k)
-    mean_LS_noise_power = average(LS_noise_power_mean_array)
-    ### We can randomly sample N spectra from the power spectra stored above ##
+    # for noise power
+    LS_k_mean, mean_LS_noise_power, N_used = average(bins, LS_noise_power_mean_array, LS_k)
 
+    # for the final power
+    LS_k_mean, LS_power_mean, N_used = average(bins, LS_power, LS_k)
+
+    ### We can randomly sample N spectra from the power spectra stored above ##
     # to calculate the error
     bootstrap_sample = []
     for j in range(1000):
