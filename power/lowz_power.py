@@ -254,6 +254,7 @@ def compute_power_hsla(data_path = '', use_metalmasking=False,wavelim=[1050,1180
     # for central_z in redshift_bins:
     Lomb_k = []
     Lomb_power = []
+    Lomb_noise_power = []
     z_abs_all = []
     # Looping through QSO spectra #
     count_objects = 0
@@ -339,35 +340,47 @@ def compute_power_hsla(data_path = '', use_metalmasking=False,wavelim=[1050,1180
             LS_norm_noise = resfactor * LS_noise_power  # /len(noise)
             # print (LS_noise_k - LS_k)
             LS_noisy_power.append(LS_norm_noise)
+
         LS_noise_mean = np.mean(LS_noisy_power, axis=0)
         Raw_diff_Noise = LS_norm_raw - LS_noise_mean
         if not no_lsf_correction:
-            ith_power = Raw_diff_Noise / (window(LS_k, resfactor, lsf=cos_lsf, wave=wavelength, LP=lp,
-                                                 grating=('G130M' if np.median(wavelength) < 1460.0 else 'G160M')) ** 2)
+            win = window(LS_k, resfactor, lsf=cos_lsf, wave=wavelength, LP=lp, grating=('G130M' if np.median(wavelength) < 1460.0 else 'G160M')) ** 2
+            ith_power = Raw_diff_Noise/win
+            ith_noise_power = LS_noise_mean/win
             if only_130M:
-                ith_power = Raw_diff_Noise / (window(LS_k, resfactor, lsf=cos_lsf, wave=wavelength, LP=lp, grating=(
-                    'G130M' if np.median(wavelength) < 1460.0 else 'G160M')) ** 2)
+                win = window(LS_k, resfactor, lsf=cos_lsf, wave=wavelength, LP=lp, grating=('G130M' if np.median(wavelength) < 1460.0 else 'G160M')) ** 2
+                ith_power = Raw_diff_Noise/win
+                ith_noise_power = LS_noise_mean/win
                 print('G130M' if np.median(wavelength) < 1500.0 else 'G160M')
             if only_160M:
-                ith_power = Raw_diff_Noise / (
-                            window(LS_k, resfactor, lsf=cos_lsf, wave=wavelength, LP=lp, grating=('G160M')) ** 2)
+                win  = window(LS_k, resfactor, lsf=cos_lsf, wave=wavelength, LP=lp, grating=('G160M')) ** 2
+                ith_power = Raw_diff_Noise/win
+                ith_noise_power = LS_noise_mean/win
         else:
             ith_power = Raw_diff_Noise
+            ith_noise_power = LS_noise_mean
+
         Lomb_power.append(ith_power)
+        Lomb_noise_power.append(ith_noise_power)
         z_abs_all.append(z_absorber)
         count_objects = count_objects + 1
     try:
         LS_k = np.concatenate(np.array(Lomb_k))
     except ValueError:
-        return [[], [], [], [], []]
+        return [[], [], [], [], [], []]
+
     LS_power = np.concatenate(Lomb_power)
+    LS_noise_power_mean_array = np.concatenate(Lomb_noise_power)
 
     print('total spectra in the bin', zbin, 'are :', count_objects)
     bins = np.logspace(np.log10(0.00012596187096205269 / np.sqrt(10)), np.log10(1.25962), 46)
     # FFT_masked_k_mean, FFT_masked_power_mean = average(bins/(2.0*np.pi), power, k)
 
     LS_k_mean, LS_power_mean, N_used = average(bins, LS_power, LS_k)
+    mean_LS_noise_power = average(LS_noise_power_mean_array)
     ### We can randomly sample N spectra from the power spectra stored above ##
+
+    # to calculate the error
     bootstrap_sample = []
     for j in range(1000):
         randind = np.random.randint(0, len(Lomb_power), size=len(Lomb_power))
@@ -378,8 +391,10 @@ def compute_power_hsla(data_path = '', use_metalmasking=False,wavelim=[1050,1180
                              LS_k_mean * (rand_power_mean - LS_power_mean) / np.pi)
         bootstrap_sample.append(bootstrap)
     Cij = np.nanmean(bootstrap_sample, axis=0)
+
+
     return [LS_k_mean, LS_k_mean * LS_power_mean / np.pi, N_used, Cij,
-            [np.mean(np.concatenate(z_abs_all))] * len(LS_k_mean)]
+            [np.mean(np.concatenate(z_abs_all))] * len(LS_k_mean), LS_k_mean*mean_LS_noise_power/np.pi]
 
 
 def compute_power_forward(forward_data,  wavelim=[1050,1180], use_metalmasking=False, no_lsf_correction=False, fill_with_noise=False,
