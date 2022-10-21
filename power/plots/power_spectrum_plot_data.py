@@ -8,8 +8,7 @@ from scipy.signal import savgol_filter
 # example
 #yhat = savgol_filter(y, 51, 3) # window size 51, polynomial order 3
 
-
-def readfile(filename):
+def readfile_old(filename):
    ps0=tab.Table.read(filename, format='ascii.no_header',names=['z','k','kpk','errkpk','N'],guess=False)
  #  ps0=ps0[ps0['k']>9e-4]
  #  ps0=ps0[ps0['k']<0.12]
@@ -21,8 +20,21 @@ def readfile(filename):
    #label='z = {:.2f} ({:.3f} - {:.2f})'.format(z, binz[0], binz[1])
    return x, y, err, z
 
+def readfile(filename):
+   ps0=tab.Table.read(filename, format='ascii.no_header',names=['z','k','kpk','errkpk','N', 'noise_power'],guess=False)
+ #  ps0=ps0[ps0['k']>9e-4]
+ #  ps0=ps0[ps0['k']<0.12]
+   ps0=ps0[ps0['N']>=4]
+   x=ps0['k']
+   y=ps0['kpk']
+   err=ps0['errkpk']
+   z=ps0['z'][0]
+   noise_p = ps0['noise_power']
+   #label='z = {:.2f} ({:.3f} - {:.2f})'.format(z, binz[0], binz[1])
+   return x, y, err, z, noise_p
+
 # plotting
-fig_name = 'power_hsla_z01_scale_cont.pdf'
+fig_name = 'power_hsla_z01.pdf'
 font = {'family': 'serif', 'weight': 'normal', 'size': 11}
 plt.rc('font', **font)
 fig, (ax1, ax2) = plt.subplots(2,1, sharex=True, gridspec_kw = {'height_ratios':[3, 1]},figsize=(6, 7) )
@@ -31,17 +43,26 @@ fig, (ax1, ax2) = plt.subplots(2,1, sharex=True, gridspec_kw = {'height_ratios':
 binz = [0.06, 0.16]
 filename='/home/vikram/power_data/z0Power_metals_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
 # same folder is there in igm server
-x, y, err, z=readfile(filename)
+x, y, err, z=readfile_old(filename)
 label=r'$\bar {\rm z}$'+'={:.2f} (Khaire et al. 2019)'.format(z)
-
 ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='green', capsize=5, elinewidth=2, zorder = 10, alpha =0.75)
 
-filename='/home/vikram/output_power/hsla_power/high_SN/Power_metals_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
+# --- noise power for old
+path = '/home/vikram/Dropbox/power_spectrum_idl_cleaned_up/'
+filename = path + 'Joint_Output/test_noise_power/Noise_Power_metal_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(
+   binz[0], binz[1])
+x, y, err, z = readfile_old(filename)
+ax1.plot(x, y, label='noise power Khaire 19', marker='.', markersize=12, ls='', markerfacecolor='none', markeredgecolor='green', markeredgewidth=1.25)
+
+
+filename='/home/vikram/output_power/hsla_power/high_SNPower_metals_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
 # same folder is there in igm server
-x, y, err, z=readfile(filename)
+x, y, err, z, noise_p=readfile(filename)
 label=r'$\bar {\rm z}$'+'={:.2f} HSLA high SN'.format(z)
 
 ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='red', capsize=5, elinewidth=2, zorder = 10)
+label = 'noise power'
+ax1.plot(x, noise_p, label=label, marker='.', markersize=12, ls='', markerfacecolor='none', markeredgecolor='red', markeredgewidth=1.25)
 
 """
 filename='/home/vikram/output_power/scale_cont/Power_metals_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
@@ -56,7 +77,7 @@ ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='k'
 
 filename='/home/vikram/output_power/hsla_power/medium_3.1_quality/Power_metals_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
 # same folder is there in igm server
-x, y, err, z=readfile(filename)
+x, y, err, z=readfile_old(filename)
 label=r'$\bar {\rm z}$'+'={:.2f} HSLA Medium SN'.format(z)
 ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='orange', capsize=5, elinewidth=2, zorder = 10, alpha=0.4)
 
