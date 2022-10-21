@@ -37,7 +37,8 @@ for j in qname_stored:
         # flag 1 for SNR < 3 and flag 2 for 3<SNR <5
         data = tab.Table.read(data_path + '/{}_coadd_G130M_final_lpALL_continuum.fits'.format(j))
         quality = (len(data)- len(data[data['GAP_FLAGS']==6.0])) / (len(data[data['GAP_FLAGS']==0.0]))
-        if quality > 3.1: # decided depending upon the histogram of quality to include many qsos for check (original was just 2)
+        #if quality > 3.1: # decided depending upon the histogram of quality to include many qsos for check (original was just 2)
+        if quality > 2:  # fiducial
             flag.append(0)
             print(quality, '->0')
         else:
