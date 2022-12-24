@@ -121,7 +121,7 @@ def compute_power(masterfile = '', data_path = '',  use_metalmasking=False,wavel
         if use_igm_metals==True:
             cut = cut2 & cut3 & ((mask==0) | (mask==5))
 
-        ## This only allows mask==0 or 5 into the LS data set ##
+        ## This only allows mask==0 or 5 into the LS data set ## --> now includes mask ==7
         if fill_with_noise:
             cutall0 = (mask==0) | (mask==5) | (mask==6) | (mask==7)
             cutall = cutall0 & cut2 & cut3
@@ -130,7 +130,7 @@ def compute_power(masterfile = '', data_path = '',  use_metalmasking=False,wavel
             sigma_F = sigma_F[cutall]
             continuum = continuum[cutall]
             mask = mask[cutall]
-            remove = (mask==5) | (mask==6)
+            remove = (mask==5) | (mask==6) | (mask==7)
             flux[remove] = continuum[remove] + np.random.randn(np.sum(remove)) * sigma_F[remove]
         else:
             wavelength = wavelength[cut]
