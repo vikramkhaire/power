@@ -34,13 +34,14 @@ def readfile(filename):
    return x, y, err, z, noise_p
 
 # plotting
-fig_name = 'power_hsla_z01.pdf'
+fig_name = 'power_hsla_z01_check_new.pdf'
 font = {'family': 'serif', 'weight': 'normal', 'size': 11}
 plt.rc('font', **font)
 fig, (ax1, ax2) = plt.subplots(2,1, sharex=True, gridspec_kw = {'height_ratios':[3, 1]},figsize=(6, 7) )
 
 # Read the power-spectrum file
-binz = [0.06, 0.16]
+#binz = [0.06, 0.16]
+binz  =[0.06, 0.16]
 filename='/home/vikram/power_data/z0Power_metals_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
 # same folder is there in igm server
 x, y, err, z=readfile_old(filename)
@@ -64,6 +65,13 @@ ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='re
 label = 'noise power'
 ax1.plot(x, noise_p, label=label, marker='.', markersize=12, ls='', markerfacecolor='none', markeredgecolor='red', markeredgewidth=1.25)
 
+filename='/home/vikram/output_power/hsla_power/high_SNPower_gaps_filled_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
+# same folder is there in igm server
+x, y, err, z, noise_p=readfile(filename)
+label=r'$\bar {\rm z}$'+'={:.2f} HSLA high SN'.format(z)
+ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='orange', capsize=5, elinewidth=2, zorder = 10)
+
+
 """
 filename='/home/vikram/output_power/scale_cont/Power_metals_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
 # same folder is there in igm server
@@ -72,7 +80,7 @@ label=r'$\bar {\rm z}$'+'={:.2f} cont*1.05'.format(z)
 
 ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='k', capsize=5, elinewidth=2, zorder = 10, alpha =0.5)
 
-"""
+
 
 
 filename='/home/vikram/output_power/hsla_power/medium_3.1_quality/Power_metals_masked_z{:.2f}-{:.2f}_wave1050-1180.txt'.format(binz[0], binz[1])
@@ -80,6 +88,8 @@ filename='/home/vikram/output_power/hsla_power/medium_3.1_quality/Power_metals_m
 x, y, err, z=readfile_old(filename)
 label=r'$\bar {\rm z}$'+'={:.2f} HSLA Medium SN'.format(z)
 ax1.errorbar(x, y, err, label=label, marker='.', markersize=12, ls='', color='orange', capsize=5, elinewidth=2, zorder = 10, alpha=0.4)
+"""
+
 
 ax2.set_ylim (-12, 12)
 ax2.set_ylabel ('% difference')
