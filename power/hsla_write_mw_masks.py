@@ -3,9 +3,10 @@ import numpy as np
 import glob
 
 
-data_path = '/home/vikram/output_power/hsla'
+data_path = '/home/vikram/output_power/data'
 
 files =  glob.glob(data_path + '/*final*.fits')
+print(len(files), '----> # qso found')
 
 mw_masks_table = tab.Table.read('milky_way_masks.fits')
 mw_wave = mw_masks_table['mask']
