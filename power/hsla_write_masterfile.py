@@ -40,10 +40,10 @@ for j in qname_stored:
         #if quality > 3.1: # decided depending upon the histogram of quality to include many qsos for check (original was just 2)
         if quality > 2:  # fiducial
             flag.append(0)
-            print(quality, '->0')
+            #print(quality, '->0')
         else:
             flag.append(1)
-            print(quality, '->1')
+            #print(quality, '->1')
         res.append(15)
         lpin.append('LP1')
         quality_array.append(quality)
@@ -52,7 +52,7 @@ for j in qname_stored:
 
 # store masterfile
 master_table = tab.Table([obj, redshift, sn, flag, res, lpin], names = ('obj', 'z', 'sn', 'flag', 'res', 'lp'))
-print(master_table)
+#print(master_table)
 
 masterfile_name = data_path + '/masterfile.fits'
 master_table.write(masterfile_name, overwrite = True)
