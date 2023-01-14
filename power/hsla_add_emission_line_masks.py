@@ -29,7 +29,7 @@ print(max(high), ': max --')
 #1307.4949951171875 : max --
 
 
-data_path = '/home/vikram/output_power/hsla'
+data_path = '/home/vikram/output_power/data'
 
 files =  glob.glob(data_path + '/*final*.fits')
 
