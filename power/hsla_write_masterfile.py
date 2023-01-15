@@ -1,11 +1,12 @@
 import astropy.table as tab
 import numpy as np
 import glob
+import math
 
 
-data_path = '/home/vikram/output_power/hsla'
+data_path = '/home/vikram/output_power/data'
 
-d  =  tab.Table.read(data_path + '/' + 'quasar_probing_low_z_lyaf.txt', format ='ascii')
+d  =  tab.Table.read(data_path + '/' + 'quasar_probing_low_z_lyaf_Jan14.txt', format ='ascii')
 qname = d['qname_lyaf']
 
 files =  glob.glob(data_path + '/*.fits')
@@ -29,24 +30,48 @@ qname =  list(qname)
 for j in qname_stored:
     try:
         ind = qname.index(j)
-        obj.append(j)
-        redshift.append(d['zem_q_lyaf'][ind])
-        # --- keeping the const numbers
-        sn.append(10)
-        # sor flags in hsla data by Sapna
-        # flag 1 for SNR < 3 and flag 2 for 3<SNR <5
-        data = tab.Table.read(data_path + '/{}_coadd_G130M_final_lpALL_continuum.fits'.format(j))
-        quality = (len(data)- len(data[data['GAP_FLAGS']==6.0])) / (len(data[data['GAP_FLAGS']==0.0]))
-        #if quality > 3.1: # decided depending upon the histogram of quality to include many qsos for check (original was just 2)
-        if quality > 2:  # fiducial
-            flag.append(0)
-            #print(quality, '->0')
-        else:
+
+
+        # calculating SN
+        fits_filename = data_path +'/' + j + '_coadd_G130M_final_lpALL_continuum.fits'
+        data = tab.Table.read(fits_filename)
+        data = data[data['mask']==0]
+
+        count_short = 0
+        if len(data) >10 :
+            SigN = np.median(data['FLUX'] / data['ERROR']) * np.sqrt(3)
+            SigN = round(SigN, 1)
+
+            print(SigN, j)
+            sn.append(SigN)
+
+            obj.append(j)
+            redshift.append(d['zem_q_lyaf'][ind])
+
+            """
+            # --- keeping the const numbers
+            sn.append(10)
+            # sor flags in hsla data by Sapna
+            # flag 1 for SNR < 3 and flag 2 for 3<SNR <5
+            data = tab.Table.read(data_path + '/{}_coadd_G130M_final_lpALL_continuum.fits'.format(j))
+            quality = (len(data)- len(data[data['GAP_FLAGS']==6.0])) / (len(data[data['GAP_FLAGS']==0.0]))
+            #if quality > 3.1: # decided depending upon the histogram of quality to include many qsos for check (original was just 2)
+            if quality > 2:  # fiducial
+                flag.append(0)
+                #print(quality, '->0')
+            else:
+                flag.append(1)
+                #print(quality, '->1')
+            """
+            res.append(15)
+            lpin.append('LP1')
+            quality_array.append(1)
             flag.append(1)
-            #print(quality, '->1')
-        res.append(15)
-        lpin.append('LP1')
-        quality_array.append(quality)
+        else:
+            count_short +=1
+            print('bad spctra #', count_short, j)
+
+
     except:
         print(j, 'not present in the file quasar_probing_low_z_lyaf.txt')
 
