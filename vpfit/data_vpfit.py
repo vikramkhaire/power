@@ -99,13 +99,13 @@ vpfit_outpath = '/mnt/quasar/vikram/hsla/vpfit_all'
 write_each_bin(datadir=datadir, outpath=vpfit_outpath, min_z= 0.005, max_z= 0.16)
 """
 
-hsla_path = '/home/vikram/output_power/hsla'
+hsla_path = '/home/vikram/output_power/data'
 outpath = '/home/vikram/output_power/mw_format'
 
-#write_hsla_spectra_in_correct_format(hsla_path =  hsla_path, outpath = outpath)
+write_hsla_spectra_in_correct_format(hsla_path =  hsla_path, outpath = outpath)
 
 datadir = outpath +'/'
 vpfit_outpath = '/home/vikram/output_power/vpfit_all'
-write_each_bin(datadir=datadir, outpath=vpfit_outpath, min_z= 0, max_z= 0.6, minrange= None)
+write_each_bin(datadir=datadir, outpath=vpfit_outpath, min_z= 0, max_z= 0.6)
 
 
