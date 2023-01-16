@@ -12,6 +12,6 @@ def run_code(path):
     return
 
 path = '/mnt/quasar/vikram/hsla'
-folder = glob.glob(path+ '/gamma*')
+folder = glob.glob(path+ '/gamma*')[0]
 
 split(folder)
