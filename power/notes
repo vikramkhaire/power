@@ -1,1 +1,37 @@
 # date 16/09/2022 code works and gives exact same restults. output is kept in dir output_power/final ;--> ready to modify and change
+
+# date 17/01/2023: for metal line identification----
+
+1. Not all 253 QSOs are uses by me. I am using only 231. Remaining 22 are either not probing the redshift range of interest (i.e they should have Lyman-alpha forest between rest wavelength 1050-1180 Angstrom) or too short in the Lyman alpha forest range to use it. Shortness is decided after removing milky way metals and emission lines. I will list these QSOs in the google doc.
+
+2. Out of these 231 only 190 QSOs are fitted with vpfit. I tried all but 41 QSOs failed to fit. There can be couple of reasons for such failure.  1. if vpfit does not find any absorption line which happens if the QSO has low S/N or the fit region is too short 2. somehow vpfit does not converge fitting things and there could be several reasons for that.
+
+
+7C-113807.79+463840.00 is bad; less that 10 pixels that can be used
+# Following spectra  (see the filname) are not used for vpfit (they are not short but maybe not in z range):
+
+The spectrum /home/vikram/output_power/mw_format/QSO-J1009+0713 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/PKS1101-325 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/PG1049-005 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/1ES1553+113 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/SDSSJ121716.08+080942.0 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/RXJ2154.1-4414 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/SDSSJ094952.91+390203.9 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/1ES1028+511 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/TON1015 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/SDSSJ110307.57+291230.0 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/TON1364 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/SBS1551+572 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/2MASS-J13482237+2456498 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/SDSSJ150455.56+564920.3 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/J142455.53+421407.6 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/SBS1116+523 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/J104241.27+250122.8 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/FBS1526+659 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/87GB-142519.5+264555 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/3C48 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/B0117-2837 either short or not in redshift range
+The spectrum /home/vikram/output_power/mw_format/VV2006-J080838.8+051440 either short or not in redshift range
+
+
+
