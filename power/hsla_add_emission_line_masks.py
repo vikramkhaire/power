@@ -44,3 +44,17 @@ for f in files:
     print('written', f)
 
 
+import astropy.table as tab
+def replace_mask(spectrum_file, maskvalue, wavelength_range= [1220, 1330]):
+    """
+    :param spectrum_file: fits file in which you are replacing mask
+    :param maskvalue: value of the mask e.g 4
+    :param wavelength_range: lower and higer wavelength in a list of two elements where you want to add maskvalue
+    :return:
+    """
+    data  = tab.Table.read(spectrum_file)
+    data['mask'][(data['WAVE']>wavelength_range[0])& (data['WAVE']<wavelength_range[1])]=maskvalue
+    data.write(f, overwrite= True)
+    print('written', f)
+
+    return
