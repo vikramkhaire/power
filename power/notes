@@ -35,3 +35,17 @@ The spectrum /home/vikram/output_power/mw_format/VV2006-J080838.8+051440 either 
 
 
 
+The wavelength range is chosen between 1050 to 1180 Angstrom rest frame
+
+-------------------- MASK info
+These are the masks I use:
+5 intervening (IGM) metal lines (the ones that Surya will identify)
+6 geo-coronal emission line (1301-1307.5 Angstroms)
+7 MW metal lines (I have already masked them)
+4 bad data
+3 for spectral gaps
+and 0 is the data that I will be using
+
+
+
+
